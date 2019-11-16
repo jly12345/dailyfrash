@@ -35,7 +35,7 @@ public class ShiroUtil {
                 DfUser user = SpringUtil.getBean(DfUserServiceImpl.class).getById(cuser.getUserid());
                 ContextUser contextUser = new ContextUser();
                 contextUser.setUsername(user.getUserName());
-                contextUser.setUserid(user.getUserid());
+                contextUser.setUserid(user.getId().toString());
                 contextUser.setAvatar(user.getAvatar());
                 subject.getSession().setAttribute("user",contextUser);
                 return contextUser;

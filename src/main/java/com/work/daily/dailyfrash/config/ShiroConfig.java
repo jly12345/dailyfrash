@@ -27,13 +27,15 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
         filterChainDefinitionMap.put("/favicon.ico","anon");
+        filterChainDefinitionMap.put("/","anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/libs/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/images/**", "anon");
         filterChainDefinitionMap.put("/html/**", "anon");
-        filterChainDefinitionMap.put("/account/reg", "anon");
+        filterChainDefinitionMap.put("/reg", "anon");
+        filterChainDefinitionMap.put("/login", "anon");
         //api，单独处理
         filterChainDefinitionMap.put("/api/**","anon");
 

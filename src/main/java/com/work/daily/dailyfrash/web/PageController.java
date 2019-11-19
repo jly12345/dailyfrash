@@ -32,4 +32,16 @@ public class PageController {
         return "register";
     }
 
+    @GetMapping("/userInfo")
+    public String userInfo(){
+        return "user_center_info";
+    }
+
+    @GetMapping("/cart")
+    public String cart(){
+        return "cart";
+    }
+
+
+
 }

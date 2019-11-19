@@ -3,6 +3,7 @@ package com.work.daily.dailyfrash.config;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.work.daily.dailyfrash.entity.DfUser;
 import com.work.daily.dailyfrash.service.DfUserService;
+import com.work.daily.dailyfrash.utils.PasswordUtils;
 import com.work.daily.dailyfrash.utils.SpringUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -37,9 +38,14 @@ public class CustomRealm extends AuthorizingRealm {
         log.info("-------身份认证方法--------");
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String username = token.getUsername();
+        try {
+            token.setPassword(PasswordUtils.encode(new String(token.getPassword())).toCharArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //查询
         QueryWrapper<DfUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username);
+        queryWrapper.eq("user_name",username);
 
         if (accountService == null) {
             accountService = SpringUtil.getBean(DfUserService.class);

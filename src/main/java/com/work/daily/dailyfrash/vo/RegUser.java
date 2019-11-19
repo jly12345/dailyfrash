@@ -10,9 +10,10 @@ import java.io.Serializable;
  * @Description:
  */
 @Data
-public class ContextUser implements Serializable {
-    private static final long serialVersionUID = -6527806519559722455L;
-    private String userid;
+public class RegUser implements Serializable {
+
+    private static final long serialVersionUID = -2511676839453350794L;
     private String userName;
-    private String avatar;
+    private String pwd;
+    private String email;
 }

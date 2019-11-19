@@ -1,7 +1,7 @@
 package com.work.daily.dailyfrash.utils;
 
 import com.work.daily.dailyfrash.entity.DfUser;
-import com.work.daily.dailyfrash.service.impl.DfUserServiceImpl;
+import com.work.daily.dailyfrash.service.DfUserService;
 import com.work.daily.dailyfrash.vo.ContextUser;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -31,10 +31,10 @@ public class ShiroUtil {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()) {
             if(subject.getSession().getAttribute("user") ==null){
-                ContextUser cuser = (ContextUser) subject.getPrincipal();
-                DfUser user = SpringUtil.getBean(DfUserServiceImpl.class).getById(cuser.getUserid());
+                DfUser cuser = (DfUser) subject.getPrincipal();
+                DfUser user = SpringUtil.getBean(DfUserService.class).getById(cuser.getId());
                 ContextUser contextUser = new ContextUser();
-                contextUser.setUsername(user.getUserName());
+                contextUser.setUserName(user.getUserName());
                 contextUser.setUserid(user.getId().toString());
                 contextUser.setAvatar(user.getAvatar());
                 subject.getSession().setAttribute("user",contextUser);

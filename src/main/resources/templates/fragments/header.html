@@ -9,6 +9,7 @@
                 <div class="login_info fl" th:if="${session.user!=null}">
                     欢迎您：<em th:text="${session.user.userName}"></em>
                 </div>
+                <!--<div th:text="${session.user}"></div>-->
                 <div class="login_btn fl" th:if="${session.user==null}">
                     <a href="/login">登录</a>
                     <span>|</span>
@@ -20,16 +21,11 @@
                     <span>|</span>
                     <a href="/cart">我的购物车</a>
                     <span>|</span>
-                    <a href="user_center_order.html">我的订单</a>
+                    <a href="/userCenterOrder">我的订单</a>
                 </div>
             </div>
         </div>
     </div>
 </header>
-
-<header th:fragment="black">
-    <div></div>
-</header>
-</div>
 </body>
 </html>

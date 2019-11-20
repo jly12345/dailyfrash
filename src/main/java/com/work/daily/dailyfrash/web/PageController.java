@@ -33,14 +33,26 @@ public class PageController {
     }
 
     @GetMapping("/userInfo")
-    public String userInfo(){
+    public String userInfo(HttpSession session){
+        ContextUser currentUser = ShiroUtil.getCurrentUser();
+        session.setAttribute("user",currentUser);
         return "user_center_info";
     }
 
     @GetMapping("/cart")
-    public String cart(){
+    public String cart(HttpSession session){
+        ContextUser currentUser = ShiroUtil.getCurrentUser();
+        session.setAttribute("user",currentUser);
         return "cart";
     }
+
+    @GetMapping("/userCenterOrder")
+    public String userCenterOrder(HttpSession session){
+        ContextUser currentUser = ShiroUtil.getCurrentUser();
+        session.setAttribute("user",currentUser);
+        return "user_center_order";
+    }
+
 
 
 

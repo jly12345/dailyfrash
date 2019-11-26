@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{user_cent_parent}">
-<head th:include="user_cent_parent::htmlhead" th:with="title='favorites'"></head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/user_parent}">
+<head th:include="layout/user_parent::htmlhead('购物车')"></head>
 <body>
 <scetion layout:fragment="content">
 	<div class="total_count">全部商品<em>2</em>件</div>

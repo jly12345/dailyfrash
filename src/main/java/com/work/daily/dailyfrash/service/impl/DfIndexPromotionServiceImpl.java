@@ -4,7 +4,10 @@ import com.work.daily.dailyfrash.entity.DfIndexPromotion;
 import com.work.daily.dailyfrash.mapper.DfIndexPromotionMapper;
 import com.work.daily.dailyfrash.service.DfIndexPromotionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.work.daily.dailyfrash.vo.GoodsTypeVo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +19,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DfIndexPromotionServiceImpl extends ServiceImpl<DfIndexPromotionMapper, DfIndexPromotion> implements DfIndexPromotionService {
+
 
 }

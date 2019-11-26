@@ -2,6 +2,7 @@ package com.work.daily.dailyfrash.mapper;
 
 import com.work.daily.dailyfrash.entity.DfUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.work.daily.dailyfrash.vo.ContextUser;
 
 /**
  * <p>

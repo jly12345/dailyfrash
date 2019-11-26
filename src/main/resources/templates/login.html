@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{nohead}">
-<head th:include="nohead::htmlhead" th:with="title='favorites'"></head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/nohead}">
+<head th:include="layout/nohead::htmlhead(title='登录')"></head>
 <body>
 <scetion layout:fragment="content">
-    <div class="login_top clearfix">
-        <a href="index.html" class="login_logo"><img src="images/logo02.png"></a>
-    </div>
-
     <div class="login_form_bg">
         <div class="login_form_wrap clearfix">
             <div class="login_banner fl"></div>
@@ -28,7 +24,7 @@
                             <label>记住用户名</label>
                             <a href="#">忘记密码</a>
                         </div>
-                        <input type="submit" name="" value="登录" class="input_submit">
+                        <input type="submit" name="login" value="登录" class="input_submit">
                     </form>
                 </div>
             </div>

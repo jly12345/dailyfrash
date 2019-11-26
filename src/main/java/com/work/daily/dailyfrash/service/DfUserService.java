@@ -1,7 +1,7 @@
 package com.work.daily.dailyfrash.service;
 
-import com.work.daily.dailyfrash.entity.DfUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.work.daily.dailyfrash.entity.DfUser;
 
 /**
  * <p>
@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2019-11-15
  */
 public interface DfUserService extends IService<DfUser> {
+
 
 }

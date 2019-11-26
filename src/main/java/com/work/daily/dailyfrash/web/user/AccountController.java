@@ -1,28 +1,31 @@
 package com.work.daily.dailyfrash.web.user;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.work.daily.dailyfrash.entity.DfUser;
 import com.work.daily.dailyfrash.service.DfUserService;
+import com.work.daily.dailyfrash.utils.JWTToken;
 import com.work.daily.dailyfrash.utils.PasswordUtils;
+import com.work.daily.dailyfrash.vo.Msg;
 import com.work.daily.dailyfrash.vo.RegUser;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @Auther: lingyun.jiang
  * @Date: 2019/11/18 15:22
  * @Description:
  */
-@Controller
+@RestController
 public class AccountController {
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -30,28 +33,31 @@ public class AccountController {
     private DfUserService userService;
 
     @PostMapping("/login")
-    public String login(HttpServletRequest request){
-        request.getSession().removeAttribute("login_msg");
-        // 登录失败从request中获取shiro处理的异常信息。
-        // shiroLoginFailure:就是shiro异常类的全类名.
-        String exception = (String) request.getAttribute("shiroLoginFailure");
-        String msg="" ;
-        if (exception != null) {
-            if (UnknownAccountException.class.getName().equals(exception)) {
-                msg = "account";
-            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
-                msg = "pwd";
-            } else if ("kaptchaValidateFailed".equals(exception)) {
-                msg = "code";
-            } else {
-                msg = "other";
-            }
-            request.getSession().setAttribute("login_msg",msg);
-        }
-        // 此方法不处理登录成功,由shiro进行处理
-        log.info("---------------"+msg);
+    public Msg login(String username, String password) throws Exception {
+        QueryWrapper<DfUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",username);
+        List<DfUser> users = userService.list(queryWrapper);
 
-        return "redirect:/login";
+        if(CollectionUtils.isEmpty(users)){
+            return Msg.fail().add("user_error","用户不存在");
+        }
+
+        DfUser user = users.get(0);
+
+        if(!PasswordUtils.encode(password).equals(user.getPassword())){
+            return Msg.fail().add("pwd_error","密码错误");
+        }
+
+        Subject subject = SecurityUtils.getSubject();
+        String newToken = userService.generateJwtToken(username);
+        try {
+            JWTToken token = new JWTToken(newToken);
+            subject.login(token);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+
+        return Msg.success().add("token",newToken);
     }
 
     @PostMapping("/reg")

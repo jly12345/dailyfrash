@@ -37,7 +37,7 @@ public class RedisConfig {
                 .cacheDefaults(config)
                 .transactionAware()
                 .build();
-        log.info("自定义RedisCacheManager加载完成");
+        log.info("load RedisCacheManager completed");
         return redisCacheManager;
     }
     @Bean(name = "redisTemplate")
@@ -48,7 +48,7 @@ public class RedisConfig {
         redisTemplate.setHashKeySerializer(keySerializer());
         redisTemplate.setValueSerializer(valueSerializer());
         redisTemplate.setHashValueSerializer(valueSerializer());
-        log.info("自定义RedisTemplate加载完成");
+        log.info("load RedisTemplate completed");
         return redisTemplate;
     }
     private RedisSerializer<String> keySerializer() {

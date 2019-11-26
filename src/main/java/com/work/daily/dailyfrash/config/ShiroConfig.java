@@ -1,64 +1,74 @@
 package com.work.daily.dailyfrash.config;
 
+import com.work.daily.dailyfrash.service.DfUserService;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.LinkedHashMap;
+import javax.servlet.Filter;
 import java.util.Map;
 
-/**
- * 描述：
- *
- * @author caojing
- * @create 2019-01-27-13:38
- */
 @Configuration
 public class ShiroConfig {
 
     @Bean(name = "shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(org.apache.shiro.mgt.SecurityManager securityManager) {
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/");
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        filterChainDefinitionMap.put("/favicon.ico","anon");
-        filterChainDefinitionMap.put("/","anon");
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager,DfUserService accountService) {
+        ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+        factoryBean.setSecurityManager(securityManager);
 
-        filterChainDefinitionMap.put("/css/**", "anon");
-        filterChainDefinitionMap.put("/libs/**", "anon");
-        filterChainDefinitionMap.put("/js/**", "anon");
-        filterChainDefinitionMap.put("/images/**", "anon");
-        filterChainDefinitionMap.put("/html/**", "anon");
-
-        filterChainDefinitionMap.put("/reg", "anon");
-        //api，单独处理
-        filterChainDefinitionMap.put("/api/**","anon");
-
-//        filterChainDefinitionMap.put("/admin/**", "authc");
-//        filterChainDefinitionMap.put("/user/**", "authc");
-        //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截 剩余的都需要认证
-        filterChainDefinitionMap.put("/logout", "logout");//对退出的配置
-        filterChainDefinitionMap.put("/**", "authc");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        return shiroFilterFactoryBean;
+        Map<String, Filter> filterMap = factoryBean.getFilters();
+        filterMap.put("authcToken", createAuthFilter(accountService));
+        factoryBean.setFilters(filterMap);
+        factoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition().getFilterChainMap());
+        return factoryBean;
 
     }
 
+    protected JwtAuthFilter createAuthFilter(DfUserService accountService){
+        return new JwtAuthFilter(accountService);
+    }
+
     @Bean
-    public org.apache.shiro.mgt.SecurityManager securityManager() {
+    public SecurityManager securityManager(DfUserService accountService) {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
-        securityManager.setRealm(new CustomRealm());
+        securityManager.setRealm(new CustomRealm(accountService));
+        // 关闭自带session
+        DefaultSessionStorageEvaluator evaluator = new DefaultSessionStorageEvaluator();
+        evaluator.setSessionStorageEnabled(false);
+
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        subjectDAO.setSessionStorageEvaluator(evaluator);
+
+        securityManager.setSubjectDAO(subjectDAO);
         return securityManager;
     }
 
     @Bean
-    public CustomRealm customRealm() {
-        CustomRealm customRealm = new CustomRealm();
+    protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
+        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+        chainDefinition.addPathDefinition("/", "anon");
+        chainDefinition.addPathDefinition("/login", "anon");
+        chainDefinition.addPathDefinition("/css/**", "anon");
+        chainDefinition.addPathDefinition("/js/**", "anon");
+        chainDefinition.addPathDefinition("/images/**", "anon");
+        chainDefinition.addPathDefinition("/html/**", "anon");
+        chainDefinition.addPathDefinition("/image/**", "anon");
+        chainDefinition.addPathDefinition("/logout", "logout");
+        chainDefinition.addPathDefinition("/reg/**", "anon");
+        chainDefinition.addPathDefinition("/pro/**", "anon");
+        chainDefinition.addPathDefinition("/**", "authcToken");
+        return chainDefinition;
+    }
+
+    @Bean
+    public CustomRealm customRealm(DfUserService accountService) {
+        CustomRealm customRealm = new CustomRealm(accountService);
         return customRealm;
     }
 }

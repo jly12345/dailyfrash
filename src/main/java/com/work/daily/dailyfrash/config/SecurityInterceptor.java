@@ -17,7 +17,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String url = request.getRequestURI();
 
-        String[] patterns = new String[]{"/css/**","/libs/**","/js/**","/images/**","/html/**"};
+        String[] patterns = new String[]{"/css/**","/libs/**","/js/**","/images/**","/html/**","/error"};
         boolean isMatch=false;
         PathMatcher pathMatcherToUse = new AntPathMatcher();
         for(String pattern:patterns){
